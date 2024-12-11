@@ -1,38 +1,20 @@
 import { useEffect, useRef } from 'react';
-import type { TocOptions } from '../types';
+import type { TocOptions } from '@toc-kit/core';
+import { createIntersectionManager } from '@toc-kit/core';
 
 export function useTocIntersection(
   onIntersect: (id: string | null) => void,
   options: TocOptions = {}
 ) {
-  const { rootMargin = '-20% 0% -80% 0%', threshold = 0 } = options;
-  const observerRef = useRef<IntersectionObserver | null>(null);
+  const managerRef = useRef(createIntersectionManager(options));
 
   useEffect(() => {
-    const headings = document.querySelectorAll('[data-toc-id]');
-
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        const intersecting = entries.filter((entry) => entry.isIntersecting);
-        if (intersecting.length > 0) {
-          const topmost = intersecting.reduce((acc, curr) => {
-            return acc.boundingClientRect.top < curr.boundingClientRect.top
-              ? acc
-              : curr;
-          });
-          const id = topmost.target.getAttribute('data-toc-id');
-          onIntersect(id);
-        }
-      },
-      { rootMargin, threshold }
-    );
-
-    headings.forEach((heading) => {
-      observerRef.current?.observe(heading);
-    });
+    const manager = managerRef.current;
+    manager.setCallback(onIntersect);
+    manager.observe();
 
     return () => {
-      observerRef.current?.disconnect();
+      manager.disconnect();
     };
-  }, [onIntersect, rootMargin, threshold]);
+  }, [onIntersect]);
 }

@@ -1,9 +1,9 @@
 import { createContext, forwardRef, useContext, useEffect, useId } from 'react';
-import type { TocSectionContextValue, TocSectionData } from '../types';
+import type { TocSectionData } from '@toc-kit/core';
 import { useTocContext } from './root';
 import { Slot } from './slot';
 
-const TocSectionContext = createContext<TocSectionContextValue>({
+const TocSectionContext = createContext<{ id: string | null; level: number }>({
   id: null,
   level: 0,
 });
@@ -18,7 +18,7 @@ export const TocSection = forwardRef<HTMLElement, TocSectionProps>(
   (props, ref) => {
     const { title, metadata, children } = props;
     const id = useId();
-    const { registerSection, unregisterSection } = useTocContext();
+    const store = useTocContext();
     const parentContext = useContext(TocSectionContext);
     const level = parentContext.level + 1;
 
@@ -30,19 +30,14 @@ export const TocSection = forwardRef<HTMLElement, TocSectionProps>(
         parentId: parentContext.id,
         metadata,
       };
-      registerSection(section);
-      return () => unregisterSection(id);
-    }, [
-      id,
-      title,
-      level,
-      parentContext.id,
-      metadata,
-      registerSection,
-      unregisterSection,
-    ]);
 
-    const contextValue: TocSectionContextValue = {
+      store.addSection(section);
+      return () => {
+        store.removeSection(id);
+      };
+    }, [id, title, level, parentContext.id, metadata, store]);
+
+    const contextValue: { id: string | null; level: number } = {
       id,
       level,
     };

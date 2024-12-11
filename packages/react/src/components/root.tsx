@@ -1,9 +1,10 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useMemo, useRef } from 'react';
 import { useTocIntersection } from '../hooks/useTocIntersection';
 import { useTocScroll } from '../hooks/useTocScroll';
-import type { TocContextValue, TocOptions, TocSectionData } from '../types';
+import type { TocOptions, TocSectionData, TocStore } from '@toc-kit/core';
+import { createTocStore } from '@toc-kit/core';
 
-const TocContext = createContext<TocContextValue | null>(null);
+const TocContext = createContext<TocStore | null>(null);
 
 export interface TocRootProps {
   children: React.ReactNode;
@@ -11,32 +12,17 @@ export interface TocRootProps {
 }
 
 export function TocRoot({ children, options }: TocRootProps) {
-  const [sections, setSections] = useState<TocSectionData[]>([]);
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const storeRef = useRef(createTocStore());
+  const store = storeRef.current;
 
-  const registerSection = (section: TocSectionData) => {
-    setSections((prev) => [...prev, section]);
-  };
+  useTocIntersection((id) => store.setActiveId(id), options);
+  useTocScroll(store.getActiveId(), options);
 
-  const unregisterSection = (id: string) => {
-    setSections((prev) => prev.filter((section) => section.id !== id));
-  };
-
-  useTocIntersection(setActiveId, options);
-  useTocScroll(activeId, options);
-
-  const value = useMemo(
-    () => ({
-      sections,
-      activeId,
-      registerSection,
-      unregisterSection,
-      setActiveId,
-    }),
-    [sections, activeId]
+  return (
+    <TocContext.Provider value={store}>
+      {children}
+    </TocContext.Provider>
   );
-
-  return <TocContext.Provider value={value}>{children}</TocContext.Provider>;
 }
 
 export function useTocContext() {

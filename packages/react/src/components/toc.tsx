@@ -1,6 +1,12 @@
 import { useMemo } from 'react';
-import type { TocRenderProps, TocSectionData } from '../types';
+import type { TocSectionData } from '@toc-kit/core';
 import { useTocContext } from './root';
+
+export interface TocRenderProps {
+  sections: TocSectionData[];
+  activeId: string | null;
+  onSelect: (id: string) => void;
+}
 
 export interface TocProps {
   render: (props: TocRenderProps) => React.ReactNode;
@@ -31,15 +37,15 @@ function buildTree(sections: TocSectionData[]) {
 }
 
 export function Toc({ render }: TocProps) {
-  const { sections, activeId, setActiveId } = useTocContext();
+  const store = useTocContext();
+  const sections = store.getSections();
+  const activeId = store.getActiveId();
 
-  const sortedSections = useMemo(() => {
-    return buildTree(sections);
-  }, [sections]);
+  const tree = useMemo(() => buildTree(sections), [sections]);
 
   return render({
-    sections: sortedSections,
+    sections: tree,
     activeId,
-    onActivate: setActiveId,
+    onSelect: (id) => store.setActiveId(id),
   });
 }
