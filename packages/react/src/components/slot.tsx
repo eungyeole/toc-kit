@@ -33,7 +33,9 @@ export const Slot = forwardRef<HTMLElement, SlotProps>(
     const { children, ...slotProps } = props;
 
     if (isValidElement(children)) {
+      // biome-ignore lint/suspicious/noExplicitAny: React element props need to be flexible
       const mergedProps = mergeProps(slotProps, (children as any).props) as any;
+      // biome-ignore lint/suspicious/noExplicitAny: React ref types need to be flexible
       const mergedRef = mergeRefs(forwardedRef, (children as any).ref) as any;
 
       return cloneElement(children, {

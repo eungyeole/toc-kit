@@ -2,6 +2,7 @@ import { mergeEventHandlers } from './merge-event-handlers';
 
 const eventRegex = /^on[A-Z]/;
 
+// biome-ignore lint/suspicious/noExplicitAny: This type needs to be flexible for various prop types
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Props = Record<string, any>;
 
