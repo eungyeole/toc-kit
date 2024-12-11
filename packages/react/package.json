@@ -1,3 +1,9 @@
 {
-    "name": "@toc-kit/react"
+  "name": "@toc-kit/react",
+  "peerDependencies": {
+    "@types/react": "^19.0.1",
+    "react": "^19.0.0",
+    "@types/react-dom": "^19.0.2",
+    "react-dom": "^19.0.0"
+  }
 }
