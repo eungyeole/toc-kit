@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { TocRenderProps, TocSectionData } from '../types';
+import type { TocRenderProps, TocSectionData } from '../types';
 import { useTocContext } from './root';
 
 export interface TocProps {
@@ -10,7 +10,7 @@ function buildTree(sections: TocSectionData[]) {
   const tree: TocSectionData[] = [];
   const map = new Map<string, TocSectionData[]>();
 
-  sections.forEach(section => {
+  sections.forEach((section) => {
     if (section.parentId === null) {
       tree.push(section);
     } else {

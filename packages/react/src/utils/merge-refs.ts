@@ -1,4 +1,4 @@
-import { MutableRefObject, Ref } from "react";
+import type { MutableRefObject, Ref } from 'react';
 
 type PossibleRef<T> = Ref<T> | undefined;
 
@@ -13,7 +13,7 @@ export function mergeRefs<T>(
     refs.forEach((ref) => {
       if (!ref) return;
 
-      if (typeof ref === "function") {
+      if (typeof ref === 'function') {
         ref(instance);
       } else {
         (ref as MutableRefObject<T | null>).current = instance;

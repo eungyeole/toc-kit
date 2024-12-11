@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, useState } from 'react';
-import { TocContextValue, TocOptions, TocSectionData } from '../types';
 import { useTocIntersection } from '../hooks/useTocIntersection';
 import { useTocScroll } from '../hooks/useTocScroll';
+import type { TocContextValue, TocOptions, TocSectionData } from '../types';
 
 const TocContext = createContext<TocContextValue | null>(null);
 

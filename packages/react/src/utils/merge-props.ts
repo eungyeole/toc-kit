@@ -1,4 +1,4 @@
-import { mergeEventHandlers } from "./merge-event-handlers";
+import { mergeEventHandlers } from './merge-event-handlers';
 
 const eventRegex = /^on[A-Z]/;
 
@@ -13,14 +13,14 @@ export const mergeProps = <T extends Props>(...propsList: T[]) => {
     for (const key in acc) {
       if (
         eventRegex.test(key) &&
-        typeof acc[key] === "function" &&
-        typeof props[key] === "function"
+        typeof acc[key] === 'function' &&
+        typeof props[key] === 'function'
       ) {
         acc[key] = mergeEventHandlers(acc[key], props[key]);
         continue;
       }
 
-      if (key === "style") {
+      if (key === 'style') {
         acc[key] = { ...acc[key], ...props[key] };
         continue;
       }

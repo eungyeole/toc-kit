@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { TocOptions } from '../types';
+import type { TocOptions } from '../types';
 
 export function useTocScroll(
   targetId: string | null,
@@ -18,7 +18,8 @@ export function useTocScroll(
     if (now - lastScrollTime.current < 100) return;
 
     lastScrollTime.current = now;
-    const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+    const top =
+      target.getBoundingClientRect().top + window.pageYOffset - offset;
 
     window.scrollTo({
       top,
