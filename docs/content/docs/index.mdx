@@ -1,13 +1,130 @@
 ---
-title: Hello World
-description: Your first document
+title: "@toc-kit/react 사용법"
+description: React에서 TOC(목차) 기능을 쉽게 구현하는 @toc-kit/react의 사용법, 예제, API 문서
 ---
 
-Welcome to the docs! You can start writing documents in `/content/docs`.
+# @toc-kit/react
 
-## What is Next?
+React에서 동적인 목차(TOC, Table of Contents)를 쉽게 구현할 수 있는 컴포넌트/훅 모음입니다.
 
-<Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
-  <Card title="Learn more about Fumadocs" href="https://fumadocs.vercel.app" />
-</Cards>
+## 설치 방법
+
+```bash
+pnpm add @toc-kit/react
+# 또는
+yarn add @toc-kit/react
+# 또는
+npm install @toc-kit/react
+```
+
+## 기본 사용법
+
+```tsx
+import { Toc } from "@toc-kit/react";
+
+<Toc.Root>
+  <Toc.Item id="section1">Section 1</Toc.Item>
+  <Toc.Item id="section2">Section 2</Toc.Item>
+</Toc.Root>;
+```
+
+## 예제: 동적 목차와 활성화 상태
+
+아래는 스크롤에 따라 활성화되는 TOC 예시입니다.
+
+import { Toc } from "@toc-kit/react";
+
+<Toc.Root>
+  <div>
+    {Array.from({ length: 5 }).map((_, index) => (
+      <Toc.Item key={index} id={`section-${index}`}>
+        <div
+          style={{
+            height: 200,
+            scrollMarginTop: "100px",
+            border: "1px solid #eee",
+            marginBottom: 8,
+          }}
+        >
+          Section {index + 1}
+        </div>
+      </Toc.Item>
+    ))}
+  </div>
+</Toc.Root>
+
+## 고급 사용법
+
+### 특정 스크롤 영역(뷰포트) 지정
+
+```tsx
+<Toc.Root>
+  <Toc.Viewport>
+    <div style={{ height: 300, overflow: "auto" }}>
+      <Toc.Item id="a">A</Toc.Item>
+      <Toc.Item id="b">B</Toc.Item>
+    </div>
+  </Toc.Viewport>
+</Toc.Root>
+```
+
+### useToc 훅으로 직접 상태 사용
+
+```tsx
+import { useToc } from "@toc-kit/react";
+
+function MyTocList() {
+  const { items, activeId } = useToc();
+  return (
+    <ul>
+      {items.map((item) => (
+        <li
+          key={item.id}
+          style={{ fontWeight: item.id === activeId ? "bold" : undefined }}
+        >
+          {item.id}
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+## API Reference
+
+### `<Toc.Root>`
+
+- TOC 전체를 감싸는 Provider 컴포넌트
+- Props: `{ children }`
+
+### `<Toc.Item>`
+
+- 목차의 각 항목을 나타냄
+- Props:
+  - `id: string` (필수)
+  - `depth?: number` (기본값 1)
+  - `children: ReactNode`
+
+### `<Toc.Viewport>`
+
+- 스크롤 타겟이 되는 영역을 지정할 때 사용
+- Props: `{ children }`
+
+### `useToc()`
+
+- 현재 활성화된 TOC 아이템과 전체 아이템 배열을 반환
+- 반환값: `{ activeId, items }`
+
+## FAQ
+
+### Q. SSR(서버사이드 렌더링)에서 동작하나요?
+
+A. 클라이언트 컴포넌트(`"use client"`)로만 동작합니다. Next.js의 app router 환경에서 사용 시, 반드시 클라이언트 컴포넌트에서 사용하세요.
+
+### Q. 커스텀 스타일/렌더링이 가능한가요?
+
+A. `Toc.Item` 내부에 원하는 컴포넌트/스타일을 자유롭게 넣을 수 있습니다. `useToc` 훅을 활용해 직접 렌더링도 가능합니다.
+
+---
+
+더 궁금한 점이 있다면 이슈로 남겨주세요!
