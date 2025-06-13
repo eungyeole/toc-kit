@@ -5,6 +5,9 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "esModuleInterop": true,
-    "strict": true
+    "strict": true,
+    "paths": {
+      "@toc-kit/core": ["../core/src"]
+    }
   }
 }
